@@ -22,7 +22,7 @@ if {${idx} != -1} {
     set xpr_path [file normalize [lindex ${argv} [expr {${idx}+1}]]]
 } else {
     # Default
-    set xpr_path [file join ${repo_path} proj [file tail $repo_path]].xpr]
+    set xpr_path [file join ${repo_path} prj [file tail $repo_path]].xpr]
 }
 
 # Handle vivado_version argument
@@ -73,7 +73,7 @@ set part_name [get_property "part" $obj]
 puts "INFO: Configuring project IP handling properties"
 set_property "corecontainer.enable" "0" $obj
 set_property "ip_cache_permissions" "read write" $obj
-set_property "ip_output_repo" "[file normalize "$repo_path/proj/cache"]" $obj
+set_property "ip_output_repo" "[file normalize "$repo_path/prj/cache"]" $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -94,7 +94,7 @@ set_project_properties_pre_add_repo $proj_name
 # Set IP repository paths
 puts "INFO: Setting IP repository paths"
 set obj [get_filesets sources_1]
-set_property "ip_repo_paths" "[file normalize $repo_path/repo]" $obj
+set_property "ip_repo_paths" "[file normalize $repo_path/ips]" $obj
 
 # Refresh IP Repositories
 puts "INFO: Refreshing IP repositories"

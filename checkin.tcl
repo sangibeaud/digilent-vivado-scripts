@@ -9,6 +9,9 @@
 
 set script_dir [file normalize [file dirname [info script]]]
 
+set ip_repo_path ips
+set prj_path prj
+
 foreach arg $argv {
     puts $arg
 }
@@ -24,13 +27,23 @@ if {${idx} != -1} {
     set repo_path [file normalize [file join [file dirname [info script]] ..]]
 }
 
+# Handle ip repo path argument
+set idx [lsearch ${argv} "-i"]
+if {${idx} != -1} {
+    set repo_path [glob -nocomplain [file normalize [lindex ${argv} [expr {${idx}+1}]]]]
+} else {
+    # Default
+    set ip_repo_path [file normalize [file join [file dirname [info script]] ..]]
+}
+
+
 # Handle xpr_path argument
 set idx [lsearch ${argv} "-x"]
 if {${idx} != -1} {
     set xpr_path [glob -nocomplain [file normalize [lindex ${argv} [expr {${idx}+1}]]]]
 } else {
     # Default
-    set xpr_path [glob -nocomplain "${repo_path}/proj/*.xpr"]
+    set xpr_path [glob -nocomplain "${repo_path}/${prj_path}/*.xpr"]
 }
 if {[llength ${xpr_path}] != 1} {
     puts "ERROR: XPR not found"
@@ -65,7 +78,7 @@ if {[llength $already_opened] == 0} {
 
 
 set required_dirs [list                 \
-    $repo_path/proj                     \
+    $repo_path/$prj_path                     \
     $repo_path/hw_handoff               \
     $repo_path/src                      \
     $repo_path/src/bd                   \
@@ -73,18 +86,18 @@ set required_dirs [list                 \
     $repo_path/src/ip                   \
     $repo_path/src/hdl                  \
     $repo_path/src/other                \
-    $repo_path/repo                     \
-    $repo_path/repo/local               \
+    $repo_path/$ip_repo_path            \
+    $repo_path/$ip_repo_path/local               \
 ]
 set required_files [list                \
-    $repo_path/proj/.keep               \
+    $repo_path/$prj_path/.keep               \
     $repo_path/hw_handoff/.keep         \
     $repo_path/src/bd/.keep             \
     $repo_path/src/constraints/.keep    \
     $repo_path/src/ip/.keep             \
     $repo_path/src/hdl/.keep            \
     $repo_path/src/other/.keep          \
-    $repo_path/repo/local/.keep         \
+    $repo_path/$ip_repo_path/local/.keep         \
 ]
 set files [list]
 
@@ -111,7 +124,8 @@ if {[llength $bd_files] > 1} {
     set bd_name [file tail [file rootname [get_property NAME $bd_file]]]
     set script_name "$repo_path/src/bd/${bd_name}.tcl"
     puts "INFO: Checking in ${script_name} to version control."
-    write_bd_tcl -force -no_ip_version -make_local $script_name
+    #write_bd_tcl -force -no_ip_version -make_local $script_name
+    write_bd_tcl -force -no_ip_version $script_name
     # TODO: Add support for "Add Module" IPI features (check in hdl files included in sources_1, but not any ip fileset)
 } else {
     foreach source_file [get_files -of_objects [get_filesets sources_1]] {

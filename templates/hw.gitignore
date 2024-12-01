@@ -8,23 +8,23 @@
 !LICENSE
 !project_info.tcl
 !post_build.tcl
-!proj/
-!repo/
+!prj/
+!ips/
 !src/
-!scripts/
+!utl/scripts/
 !hw_handoff/
 
 # vivado workspace
-proj/*
+prj/*
 
 # ip repository
-repo/**
-!repo/vivado-library
-repo/vivado-library/**
-!repo/local
-!repo/local/**
-!repo/cache
-repo/cache/**
+ips/**
+!ips/vivado-library
+ips/vivado-library/**
+!ips/local
+!ips/local/**
+!ips/cache
+ips/cache/**
 
 # version controlled sources
 src/**
